@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For My Valentine 💕</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: #cfe9ff;
+      background-image: url('https://www.transparenttextures.com/patterns/hearts.png');
+      overflow: hidden;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      color: red;
+      font-size: 20px;
+      animation: floatUp linear forwards;
+      pointer-events: none;
+    }
+    @keyframes floatUp {
+      to { transform: translateY(-110vh); opacity: 0; }
+    }
+
+    .card {
+      background: #ffffffee;
+      max-width: 650px;
+      width: 90%;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      z-index: 2;
+    }
+    h1 { text-align: center; color: #d6336c; }
+    .question { display: none; }
+    .question.active { display: block; }
+    label { display: block; margin: 12px 0; font-size: 16px; cursor: pointer; }
+    input[type="radio"] { margin-right: 8px; }
+    .next-btn {
+      margin-top: 20px; padding: 10px 18px; border: none; border-radius: 10px;
+      background: #d6336c; color: #fff; font-size: 15px; cursor: pointer;
+    }
+
+    /* Popup */
+    .popup {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      display: none; justify-content: center; align-items: center; z-index: 999;
+    }
+    .popup-box {
+      background: #fff; padding: 25px; border-radius: 16px; text-align: center;
+      max-width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: pop 0.3s ease;
+    }
+    .popup-box p { font-size: 18px; color: #d6336c; }
+    .popup-box button {
+      margin-top: 15px; padding: 8px 16px; border: none; border-radius: 8px;
+      background: #d6336c; color: #fff; cursor: pointer;
+    }
+    @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* Final page */
+    .final {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      color: #fff;
+      z-index: 1000;
+    }
+    .final h1 { font-size: 40px; margin-bottom: 10px; }
+    .final p { font-size: 22px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Answer Carefully 😌❤️</h1>
+
+    <div class="question active" id="q1">
+      <h3>1. When did we first talk?</h3>
+      <label><input type="radio" name="q1" value="a">25th April 2024</label>
+      <label><input type="radio" name="q1" value="b">26th April 2024</label>
+      <label><input type="radio" name="q1" value="c">27th April 2024</label>
+      <label><input type="radio" name="q1" value="d">I don't remember</label>
+    </div>
+
+    <div class="question" id="q2">
+      <h3>2. What is the first gift I gave?</h3>
+      <label><input type="radio" name="q2" value="a">Chocolates</label>
+      <label><input type="radio" name="q2" value="b">Flowers</label>
+      <label><input type="radio" name="q2" value="c">Manas Shanti toy</label>
+      <label><input type="radio" name="q2" value="d">Perfume</label>
+    </div>
+
+    <div class="question" id="q3">
+      <h3>3. What do you want for Valentine’s Day?</h3>
+      <label><input type="radio" name="q3" value="a">Flowers</label>
+      <label><input type="radio" name="q3" value="b">Chocolates</label>
+      <label><input type="radio" name="q3" value="c">Bobbattlu</label>
+      <label><input type="radio" name="q3" value="d">Peace of Mind</label>
+      <button class="next-btn" id="next3">Next ➡️</button>
+    </div>
+
+    <div class="question" id="q4">
+      <h3>4. Will you be my Valentine?</h3>
+      <label><input type="radio" name="q4" value="yes">Yes 💘</label>
+      <label><input type="radio" name="q4" value="no">No</label>
+      <button class="next-btn" id="next4">Next ➡️</button>
+    </div>
+  </div>
+
+  <div class="popup" id="popup">
+    <div class="popup-box">
+      <p id="popupText"></p>
+      <button onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
+  <div class="final" id="final">
+    <h1>I Love You ❤️</h1>
+  </div>
+
+  <script>
+    const popup = document.getElementById('popup');
+    const popupText = document.getElementById('popupText');
+    const finalPage = document.getElementById('final');
+
+    const showPopup = text => { popupText.innerHTML = text; popup.style.display = 'flex'; };
+    const closePopup = () => popup.style.display = 'none';
+    const show = id => document.querySelectorAll('.question').forEach(q => q.classList.toggle('active', q.id === id));
+
+    // Floating hearts generator
+    setInterval(() => {
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = '❤️';
+      h.style.left = Math.random() * 100 + 'vw';
+      h.style.animationDuration = (3 + Math.random() * 3) + 's';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 6000);
+    }, 400);
+
+    document.querySelectorAll('input[name="q1"]').forEach(o => o.onchange = () => o.value === 'c' ? (showPopup('I love you bu buuu💕'), show('q2')) : (showPopup('Rey Rey vidini yevarikaina chupinchandi raa 🤕😵‍💫'), o.checked=false));
+    document.querySelectorAll('input[name="q2"]').forEach(o => o.onchange = () => o.value === 'd' ? (showPopup('Good job baby bu 💝'), show('q3')) : (showPopup('ra na kodaka intiki.. virichestha 💨💨'), o.checked=false));
+
+    let q3Answered=false;
+    document.querySelectorAll('input[name="q3"]').forEach(o => o.onchange = () => { q3Answered=true; o.value==='d'?showPopup('You are going to pay for this👊🏻👊🏻'):showPopup('Hip hip hurrey🎊 Noted 💘'); });
+    document.getElementById('next3').onclick = () => q3Answered ? show('q4') : showPopup('Answer the question first 😌');
+
+    let q4Yes = false;
+    document.querySelectorAll('input[name="q4"]').forEach(o => o.onchange = () => {
+      if (o.value === 'yes') {
+        q4Yes = true;
+        showPopup('Awww you are my Valentine 🫶🏻🎉<br> Thank you for being my Valentine');
+      } else {
+        showPopup('❌ Invalid choice <br> (system has detected you are already my Valentine.)');
+        o.checked = false;
+      }
+    });
+
+    document.getElementById('next4').onclick = () => {
+      if (q4Yes) {
+        finalPage.style.display = 'flex';
+      } else {
+        showPopup('Choose the correct answer first 😌');
+      }
+    };
+  </script>
+</body>
+</html>
